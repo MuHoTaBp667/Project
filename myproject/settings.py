@@ -76,9 +76,9 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'phone',
-        'USER': 'djangosergei',
-        'PASSWORD': 'cat',
+        'NAME': 'practica',
+        'USER': 'practica',
+        'PASSWORD': '1234',
         'HOST': 'localhost',  # или IP-адрес сервера БД
         'PORT': '3306',  # порт MySQL (обычно 3306)
     }
