@@ -1,0 +1,48 @@
+# Виртуальное окружение
+venv/
+env/
+ENV/
+.venv/
+
+# Python кэш
+__pycache__/
+*.py[cod]
+*$py.class
+
+# База данных Django (локальная)
+db.sqlite3
+db.sqlite3-journal
+
+
+# Медиа-файлы (в проде храните в S3/др. облаке)
+media/
+
+
+# Статика (в проде собирайте на сервере)
+static/
+
+# Файлы настроек
+.env
+.env.local
+local_settings.py
+.secret
+
+# IDE и редакторы
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ОС-специфичные файлы
+.DS_Store      # macOS
+Thumbs.db     # Windows
+
+
+# Логи и временные файлы
+logs/
+*.log
+tmp/
+
+# Миграции (осторожно: не исключайте всю папку migrations!)
+# */migrations/00*.py    # исключаем тестовые миграции
+# !*/migrations/__init__.py  # оставляем __init__.py
