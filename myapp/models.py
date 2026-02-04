@@ -1,5 +1,3 @@
-from django.db import models
-
 # This is an auto-generated Django model module.
 # You'll have to do the following manually to clean this up:
 #   * Rearrange models' order
@@ -11,7 +9,7 @@ from django.db import models
 
 
 class PsAors(models.Model):
-    id = models.CharField(unique=True, max_length=40)
+    id = models.CharField(unique=True, max_length=40, primary_key=True)
     contact = models.CharField(max_length=255, blank=True, null=True)
     default_expiration = models.IntegerField(blank=True, null=True)
     mailboxes = models.CharField(max_length=80, blank=True, null=True)
@@ -33,7 +31,7 @@ class PsAors(models.Model):
 
 
 class PsAuths(models.Model):
-    id = models.CharField(unique=True, max_length=40)
+    id = models.CharField(unique=True, max_length=40, primary_key=True)
     auth_type = models.CharField(max_length=12, blank=True, null=True)
     nonce_lifetime = models.IntegerField(blank=True, null=True)
     md5_cred = models.CharField(max_length=40, blank=True, null=True)
@@ -50,7 +48,7 @@ class PsAuths(models.Model):
 
 
 class PsEndpoints(models.Model):
-    id = models.CharField(unique=True, max_length=40)
+    id = models.CharField(unique=True, max_length=40, primary_key=True)
     transport = models.CharField(max_length=40, blank=True, null=True)
     aors = models.CharField(max_length=200, blank=True, null=True)
     auth = models.CharField(max_length=40, blank=True, null=True)

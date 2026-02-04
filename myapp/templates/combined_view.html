@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Объединённые данные</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #8f60be 70%);
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+            transition: background-color 0.3s ease;
+        }
+        td {
+            color: #555;
+        }
+        .id-cell {
+            font-weight: bold;
+            color: #2c3e50;
+            background-color: #ecf0f1;
+        }
+        @media (max-width: 768px) {
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            th, td {
+                min-width: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Contact</th>
+                <th>Max Contacts</th>
+                <th>Context</th>
+                <th>CallerID</th>
+                <th>TNumber</th>
+                <th>Transport</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for aors_item in aors %}
+                {% with aors_item.id as aors_id %}
+                    {% for auth_item in auth %}
+                        {% if auth_item.id == aors_id %}
+                            {% for endpoint_item in endpoints_data %}
+                                {% if endpoint_item.id == aors_id %}
+                        <tr>
+                            <td class="id-cell">{{ aors_item.id }}</td>
+                            <td>{{ aors_item.contact }}</td>
+                            <td>{{ aors_item.max_contacts }}</td>
+                            <td>{{ endpoint_item.context }}</td>
+                            <td>{{ endpoint_item.callerid }}</td>
+                            <td>{{ endpoint_item.tnumber }}</td>
+                            <td>{{ endpoint_item.transport }}</td>
+                        </tr>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endfor %}
+{% endwith %}
+{% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
