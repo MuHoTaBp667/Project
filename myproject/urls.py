@@ -5,5 +5,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('data/', views.combined_view),
+    path('data/', views.combined_view, name='combined_view'),
 ]
