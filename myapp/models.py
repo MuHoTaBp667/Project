@@ -49,13 +49,13 @@ class PsAuths(models.Model):
 
 class PsEndpoints(models.Model):
     id = models.CharField(unique=True, max_length=40, primary_key=True)
-    transport = models.CharField(max_length=40, blank=True, null=True)
+    transport = models.CharField(max_length=40, blank=True, null=True, default='transoprt-udp')
     aors = models.CharField(max_length=200, blank=True, null=True)
     auth = models.CharField(max_length=40, blank=True, null=True)
-    context = models.CharField(max_length=40, blank=True, null=True)
-    disallow = models.CharField(max_length=200, blank=True, null=True)
-    allow = models.CharField(max_length=200, blank=True, null=True)
-    direct_media = models.CharField(max_length=3, blank=True, null=True)
+    context = models.CharField(max_length=40, blank=True, null=True, default='internal')
+    disallow = models.CharField(max_length=200, blank=True, null=True, default='all')
+    allow = models.CharField(max_length=200, blank=True, null=True, default='alaw, ulaw')
+    direct_media = models.CharField(max_length=3, blank=True, null=True, default='yes')
     connected_line_method = models.CharField(max_length=8, blank=True, null=True)
     direct_media_method = models.CharField(max_length=8, blank=True, null=True)
     direct_media_glare_mitigation = models.CharField(max_length=8, blank=True, null=True)
