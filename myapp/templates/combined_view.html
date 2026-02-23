@@ -57,18 +57,13 @@
             cursor: pointer;
             font-size: 18px;
             font-weight: bold;
-            box-shadow: 0 4px 15px #667eea;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
             transition: all 0.3s;
         }
         
         .add-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px #667eea;(40, 167, 69, 0.4);
-        }
-        
-        .add-btn i {
-            margin-right: 10px;
-            font-size: 24px;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
         }
         
         /* Контейнер формы */
@@ -85,6 +80,10 @@
         
         .form-container.show {
             display: block;
+        }
+        
+        .form-container.edit-mode {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
         }
         
         @keyframes slideDown {
@@ -241,6 +240,75 @@
             font-style: italic;
         }
         
+        /* Кнопка редактирования в таблице */
+        .edit-link {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #ffc107;
+            color: #333;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+        
+        .edit-link:hover {
+            background-color: #e0a800;
+            transform: translateY(-2px);
+        }
+        
+        /* Сообщения */
+        .messages {
+            max-width: 800px;
+            margin: 20px auto;
+        }
+        
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* Кнопка отмены */
+        .cancel-link {
+            display: inline-block;
+            margin-left: 10px;
+            padding: 10px 20px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .cancel-link:hover {
+            background-color: #5a6268;
+        }
+        
         @media (max-width: 768px) {
             .search-container {
                 padding: 0 15px;
@@ -265,21 +333,27 @@
                 padding: 20px;
             }
         }
-        
-        /* Иконки Font Awesome */
-        .fa {
-            display: inline-block;
-            font-style: normal;
-        }
     </style>
     <!-- Добавляем Font Awesome для иконок -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
+    <!-- Отображение сообщений -->
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% endif %}"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <!-- Строка поиска -->
     <div class="search-container">
-        <input type="text" id="searchInput" class="search-input" placeholder=" Поиск по ID, Contact, CallerID, Context..." aria-label="Поле поиска по таблице">
+        <input type="text" id="searchInput" class="search-input" placeholder="Поиск по ID, Contact, CallerID, Context...">
     </div>
 
     <!-- Таблица с данными -->
@@ -296,6 +370,7 @@
                 <th>Disallow</th>
                 <th>Allow</th>
                 <th>Direct Media</th>
+                <th>Действия</th>
             </tr>
         </thead>
         <tbody>
@@ -316,6 +391,11 @@
                                         <td>{{ endpoint_item.disallow|default:"all" }}</td>
                                         <td>{{ endpoint_item.allow|default:"alaw,ulaw" }}</td>
                                         <td>{{ endpoint_item.direct_media|default:"yes" }}</td>
+                                        <td>
+                                            <a href="?edit_id={{ endpoint_item.id }}" class="edit-link">
+                                                <i class="fas fa-edit"></i> Изменить
+                                            </a>
+                                        </td>
                                     </tr>
                                 {% endif %}
                             {% endfor %}
@@ -324,32 +404,39 @@
                 {% endwith %}
             {% empty %}
                 <tr>
-                    <td colspan="10" class="no-data">Нет данных для отображения</td>
+                    <td colspan="11" class="no-data">Нет данных для отображения</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    <!-- Кнопка добавления под таблицей -->
+    <!-- Кнопка добавления -->
     <div class="btn-container">
         <button class="add-btn" onclick="toggleForm()">
             <i class="fas fa-plus-circle"></i> Добавить пользователя
         </button>
     </div>
 
-    <!-- Контейнер с формой (изначально скрыт) -->
-    <div id="formContainer" class="form-container">
+    <!-- Контейнер с формой -->
+    <div id="formContainer" class="form-container {% if edit_mode %}show edit-mode{% endif %}">
         <button class="close-btn" onclick="toggleForm()">
             <i class="fas fa-times"></i> Закрыть
         </button>
-        <h2><i class="fas fa-plus-circle"></i> Добавление пользователя</h2>
         
-        <!-- Форма -->
+        <h2>
+            <i class="fas {% if edit_mode %}fa-edit{% else %}fa-plus-circle{% endif %}"></i>
+            {% if edit_mode %}
+                Редактирование: {{ editing_user.id }}
+            {% else %}
+                Добавление пользователя
+            {% endif %}
+        </h2>
+        
         <form method="post">
             {% csrf_token %}
             
             {% for field in form %}
-            <div class="form-group" >
+            <div class="form-group">
                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                 {{ field }}
                 {% if field.errors %}
@@ -365,9 +452,18 @@
             </div>
             {% endfor %}
             
-            <button type="submit" class="submit-btn">
-                <i class="fas fa-save"></i> Сохранить
-            </button>
+            <div style="text-align: center;">
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-save"></i> 
+                    {% if edit_mode %}Обновить{% else %}Сохранить{% endif %}
+                </button>
+                
+                {% if edit_mode %}
+                <a href="{% url 'combined_view' %}" class="cancel-link">
+                    <i class="fas fa-times"></i> Отмена
+                </a>
+                {% endif %}
+            </div>
         </form>
     </div>
 
@@ -378,27 +474,23 @@
             const formContainer = document.getElementById('formContainer');
             formContainer.classList.toggle('show');
             
+            if (!formContainer.classList.contains('show') && window.location.search.includes('edit_id')) {
+                window.location.href = "{% url 'combined_view' %}";
+            }
+            
             if (formContainer.classList.contains('show')) {
                 setTimeout(() => {
                     formContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 100);
             }
         }
-        
-        // Закрыть форму по Escape
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                const formContainer = document.getElementById('formContainer');
-                if (formContainer.classList.contains('show')) {
-                    formContainer.classList.remove('show');
-                }
-            }
-        });
-        
-        // Показать форму если есть ошибки
+
+        // Автоматически открыть форму если есть ошибки или режим редактирования
         window.addEventListener('load', function() {
             const hasErrors = document.querySelectorAll('.errorlist').length > 0;
-            if (hasErrors) {
+            const isEditMode = {{ edit_mode|yesno:"true,false" }};
+            
+            if (hasErrors || isEditMode) {
                 document.getElementById('formContainer').classList.add('show');
             }
         });
@@ -416,9 +508,9 @@
                     const cells = rows[i].getElementsByTagName('td');
                     let match = false;
 
-                    for (let j = 0; j < cells.length; j++) {
-                        const cellText = cells[j].textContent || cells[j].innerText;
-                        if (cellText.toLowerCase().includes(filter)) {
+                    for (let j = 0; j < cells.length - 1; j++) {
+                        const cellText = cells[j]?.textContent || cells[j]?.innerText;
+                        if (cellText && cellText.toLowerCase().includes(filter)) {
                             match = true;
                             break;
                         }
@@ -427,6 +519,19 @@
                     rows[i].style.display = match ? '' : 'none';
                 }
             });
+        });
+
+        // Закрыть форму по Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const formContainer = document.getElementById('formContainer');
+                if (formContainer.classList.contains('show')) {
+                    formContainer.classList.remove('show');
+                    if (window.location.search.includes('edit_id')) {
+                        window.location.href = "{% url 'combined_view' %}";
+                    }
+                }
+            }
         });
     </script>
 </body>
