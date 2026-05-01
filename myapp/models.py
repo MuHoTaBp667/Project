@@ -9,7 +9,7 @@ from django.db import models
 
 
 class PsAors(models.Model):
-    id = models.CharField(unique=True, max_length=40, primary_key=True)
+    id = models.CharField(primary_key=True, max_length=40)
     contact = models.CharField(max_length=255, blank=True, null=True)
     default_expiration = models.IntegerField(blank=True, null=True)
     mailboxes = models.CharField(max_length=80, blank=True, null=True)
@@ -31,7 +31,7 @@ class PsAors(models.Model):
 
 
 class PsAuths(models.Model):
-    id = models.CharField(unique=True, max_length=40, primary_key=True)
+    id = models.CharField(primary_key=True, max_length=40)
     auth_type = models.CharField(max_length=12, blank=True, null=True)
     nonce_lifetime = models.IntegerField(blank=True, null=True)
     md5_cred = models.CharField(max_length=40, blank=True, null=True)
@@ -48,14 +48,14 @@ class PsAuths(models.Model):
 
 
 class PsEndpoints(models.Model):
-    id = models.CharField(unique=True, max_length=40, primary_key=True)
-    transport = models.CharField(max_length=40, blank=True, null=True, default='transoprt-udp')
-    aors = models.CharField(max_length=200, blank=True, null=True)
-    auth = models.CharField(max_length=40, blank=True, null=True)
-    context = models.CharField(max_length=40, blank=True, null=True, default='internal')
-    disallow = models.CharField(max_length=200, blank=True, null=True, default='all')
-    allow = models.CharField(max_length=200, blank=True, null=True, default='alaw, ulaw')
-    direct_media = models.CharField(max_length=3, blank=True, null=True, default='yes')
+    id = models.CharField(primary_key=True, max_length=40)
+    transport = models.CharField(max_length=40, blank=True, null=True)
+    aors = models.ForeignKey(PsAors, models.SET_NULL, db_column='aors', blank=True, null=True)
+    auth = models.ForeignKey(PsAuths, models.SET_NULL, db_column='auth', blank=True, null=True)
+    context = models.CharField(max_length=40, blank=True, null=True)
+    disallow = models.CharField(max_length=200, blank=True, null=True)
+    allow = models.CharField(max_length=200, blank=True, null=True)
+    direct_media = models.CharField(max_length=3, blank=True, null=True)
     connected_line_method = models.CharField(max_length=8, blank=True, null=True)
     direct_media_method = models.CharField(max_length=8, blank=True, null=True)
     direct_media_glare_mitigation = models.CharField(max_length=8, blank=True, null=True)

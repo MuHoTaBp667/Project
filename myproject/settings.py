@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
+
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,7 +27,7 @@ SECRET_KEY = 'django-insecure-^s0mx7=8c*+o6vv3(q%0x+s^a!9m0dlo$!_5s!jp97w9s3xbzb
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['91.191.187.136', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -82,8 +84,13 @@ DATABASES = {
         'PASSWORD': '1234',
         'HOST': 'localhost',  # или IP-адрес сервера БД
         'PORT': '3306',  # порт MySQL (обычно 3306)
+        'OPTIONS': {
+            'charset': 'utf8mb4',  # Обязательно для использования utf8mb4
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",  # Рекомендуется
+        },
     }
 }
+    
 
 
 
@@ -121,4 +128,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+#STATICFILES_DIRS = [
+#    os.path.join(BASE_DIR, 'static'),  # если у вас есть статика в приложении
+#]

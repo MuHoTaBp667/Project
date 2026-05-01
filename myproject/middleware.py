@@ -1,5 +1,6 @@
 # myproject/middleware.py
 from django.shortcuts import render
+from django.urls import reverse
 
 class PasswordGateMiddleware:
     def __init__(self, get_response):
@@ -8,13 +9,17 @@ class PasswordGateMiddleware:
         
     def __call__(self, request):
         # Пути, которые не требуют пароля
-        public_paths = ['/static/', '/admin/']
+        public_paths = [
+            '/static/', 
+            '/admin/',
+            '/logout/',  # Добавляем logout в исключения
+        ]
         
         for path in public_paths:
             if request.path.startswith(path):
                 return self.get_response(request)
         
-        # Теперь session гарантированно есть, так как SessionMiddleware уже отработал
+        # Проверяем, есть ли доступ
         if request.session.get('has_access', False):
             return self.get_response(request)
         

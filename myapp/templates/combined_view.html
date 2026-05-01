@@ -2,46 +2,145 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 20px;
-            background-color: #f9f9f9;
-        }
-        
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .search-container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .search-input {
-            width: 80%;
-            max-width: 500px;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 25px;
-            font-size: 16px;
-            color: #555;
-            background-color: white;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="rgb(150, 150, 150)"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>');
-            background-repeat: no-repeat;
-            background-position: left 10px center;
-            padding-left: 35px;
+        * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
-        
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+        }
+
+        /* ========== HEADER ========== */
+        .main-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .logo p {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        .search-wrapper {
+            flex: 1;
+            max-width: 400px;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border: none;
+            border-radius: 50px;
+            font-size: 14px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
         .search-input:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+            background-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
         }
-        
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px 15px;
+            border-radius: 50px;
+        }
+
+        .user-info i {
+            font-size: 18px;
+        }
+
+        .user-info span {
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* ========== ОСНОВНОЙ КОНТЕНТ ========== */
+        .main-content {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 30px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
         /* Кнопка добавления */
         .btn-container {
             text-align: center;
@@ -257,10 +356,34 @@
             transform: translateY(-2px);
         }
         
+        /* Кнопка удаления */
+        .delete-link {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-left: 8px;
+        }
+        
+        .delete-link:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+        }
+        
+        .actions-cell {
+            white-space: nowrap;
+        }
+        
         /* Сообщения */
         .messages {
-            max-width: 800px;
+            max-width: 1400px;
             margin: 20px auto;
+            padding: 0 30px;
         }
         
         .alert {
@@ -308,14 +431,32 @@
         .cancel-link:hover {
             background-color: #5a6268;
         }
+
+        /* Счетчик результатов */
+        .results-count {
+            margin: 15px 0;
+            color: #666;
+            font-size: 14px;
+        }
         
         @media (max-width: 768px) {
-            .search-container {
-                padding: 0 15px;
+            .header-container {
+                flex-direction: column;
+                text-align: center;
             }
             
-            .search-input {
+            .search-wrapper {
+                max-width: 100%;
                 width: 100%;
+            }
+            
+            .header-buttons {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .main-content {
+                padding: 0 15px;
             }
             
             table {
@@ -334,10 +475,37 @@
             }
         }
     </style>
-    <!-- Добавляем Font Awesome для иконок -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+
+    <!-- HEADER с поиском и кнопкой выхода -->
+    <header class="main-header">
+        <div class="header-container">
+            <div class="logo">
+                <h1><i class="fas fa-phone-alt"></i> Asterisk Manager</h1>
+                <p>Управление SIP пользователями</p>
+            </div>
+            
+            <div class="search-wrapper">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="searchInput" class="search-input" placeholder="Поиск по ID, Contact, CallerID, Context...">
+            </div>
+            
+            <div class="header-buttons">
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span>{{ user.username|default:"Admin" }}</span>
+                </div>
+                <form method="post" action="{% url 'logout' %}" style="margin: 0;">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Выход
+                    </button>
+                </form>
+            </div>
+        </div>
+    </header>
 
     <!-- Отображение сообщений -->
     {% if messages %}
@@ -351,121 +519,136 @@
     </div>
     {% endif %}
 
-    <!-- Строка поиска -->
-    <div class="search-container">
-        <input type="text" id="searchInput" class="search-input" placeholder="Поиск по ID, Contact, CallerID, Context...">
-    </div>
+    <!-- Основной контент -->
+    <main class="main-content">
+        <h2><i class="fas fa-users"></i> Список абонентов</h2>
+        
+        <!-- Счетчик результатов -->
+        <div class="results-count" id="resultsCount">
+            <i class="fas fa-database"></i> Всего записей: {{ aors|length }}
+        </div>
 
-    <!-- Таблица с данными -->
-    <table id="dataTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Contact</th>
-                <th>Max Contacts</th>
-                <th>Context</th>
-                <th>CallerID</th>
-                <th>TNumber</th>
-                <th>Transport</th>
-                <th>Disallow</th>
-                <th>Allow</th>
-                <th>Direct Media</th>
-                <th>Действия</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for aors_item in aors %}
-                {% with aors_item.id as aors_id %}
-                    {% for auth_item in auth %}
-                        {% if auth_item.id == aors_id %}
-                            {% for endpoint_item in endpoints_data %}
-                                {% if endpoint_item.id == aors_id %}
-                                    <tr>
-                                        <td class="id-cell">{{ aors_item.id }}</td>
-                                        <td>{{ aors_item.contact|default:"-" }}</td>
-                                        <td>{{ aors_item.max_contacts }}</td>
-                                        <td>{{ endpoint_item.context }}</td>
-                                        <td>{{ endpoint_item.callerid }}</td>
-                                        <td>{{ endpoint_item.tnumber }}</td>
-                                        <td>{{ endpoint_item.transport }}</td>
-                                        <td>{{ endpoint_item.disallow|default:"all" }}</td>
-                                        <td>{{ endpoint_item.allow|default:"alaw,ulaw" }}</td>
-                                        <td>{{ endpoint_item.direct_media|default:"yes" }}</td>
-                                        <td>
-                                            <a href="?edit_id={{ endpoint_item.id }}" class="edit-link">
-                                                <i class="fas fa-edit"></i> Изменить
-                                            </a>
-                                        </td>
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %}
-                    {% endfor %}
-                {% endwith %}
-            {% empty %}
+        <!-- Таблица с данными -->
+        <table id="dataTable">
+            <thead>
                 <tr>
-                    <td colspan="11" class="no-data">Нет данных для отображения</td>
+                    <th>ID</th>
+                    <th>Contact</th>
+                    <th>Max Contacts</th>
+                    <th>Context</th>
+                    <th>CallerID</th>
+                    <th>TNumber</th>
+                    <th>Transport</th>
+                    <th>Disallow</th>
+                    <th>Allow</th>
+                    <th>Direct Media</th>
+                    <th>Действия</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for aors_item in aors %}
+                    {% with aors_item.id as aors_id %}
+                        {% for auth_item in auth %}
+                            {% if auth_item.id == aors_id %}
+                                {% for endpoint_item in endpoints_data %}
+                                    {% if endpoint_item.id == aors_id %}
+                                        <tr>
+                                            <td class="id-cell">{{ aors_item.id }}</td>
+                                            <td>{{ aors_item.contact|default:"-" }}</td>
+                                            <td>{{ aors_item.max_contacts }}</td>
+                                            <td>{{ endpoint_item.context }}</td>
+                                            <td>{{ endpoint_item.callerid }}</td>
+                                            <td>{{ endpoint_item.tnumber }}</td>
+                                            <td>{{ endpoint_item.transport }}</td>
+                                            <td>{{ endpoint_item.disallow|default:"all" }}</td>
+                                            <td>{{ endpoint_item.allow|default:"alaw,ulaw" }}</td>
+                                            <td>{{ endpoint_item.direct_media|default:"yes" }}</td>
+                                            <td class="actions-cell">
+                                                <a href="?edit_id={{ endpoint_item.id }}" class="edit-link">
+                                                    <i class="fas fa-edit"></i> Изменить
+                                                </a>
+                                                <form method="post" action="{% url 'delete_user' endpoint_item.id %}" 
+                                                      style="display: inline-block;" 
+                                                      onsubmit="return confirm('Вы уверены, что хотите удалить пользователя {{ endpoint_item.id }}? Это действие необратимо!');">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="delete-link">
+                                                        <i class="fas fa-trash-alt"></i> Удалить
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endwith %}
+                {% empty %}
+                    <tr>
+                        <td colspan="11" class="no-data">
+                            <i class="fas fa-info-circle"></i> Нет данных для отображения
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
-    <!-- Кнопка добавления -->
-    <div class="btn-container">
-        <button class="add-btn" onclick="toggleForm()">
-            <i class="fas fa-plus-circle"></i> Добавить пользователя
-        </button>
-    </div>
+        <!-- Кнопка добавления -->
+        <div class="btn-container">
+            <button class="add-btn" onclick="toggleForm()">
+                <i class="fas fa-plus-circle"></i> Добавить пользователя
+            </button>
+        </div>
 
-    <!-- Контейнер с формой -->
-    <div id="formContainer" class="form-container {% if edit_mode %}show edit-mode{% endif %}">
-        <button class="close-btn" onclick="toggleForm()">
-            <i class="fas fa-times"></i> Закрыть
-        </button>
-        
-        <h2>
-            <i class="fas {% if edit_mode %}fa-edit{% else %}fa-plus-circle{% endif %}"></i>
-            {% if edit_mode %}
-                Редактирование: {{ editing_user.id }}
-            {% else %}
-                Добавление пользователя
-            {% endif %}
-        </h2>
-        
-        <form method="post">
-            {% csrf_token %}
+        <!-- Контейнер с формой -->
+        <div id="formContainer" class="form-container {% if edit_mode %}show edit-mode{% endif %}">
+            <button class="close-btn" onclick="toggleForm()">
+                <i class="fas fa-times"></i> Закрыть
+            </button>
             
-            {% for field in form %}
-            <div class="form-group">
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field }}
-                {% if field.errors %}
-                <ul class="errorlist">
-                    {% for error in field.errors %}
-                    <li><i class="fas fa-exclamation-circle"></i> {{ error }}</li>
-                    {% endfor %}
-                </ul>
-                {% endif %}
-                {% if field.help_text %}
-                <small style="color: rgba(255,255,255,0.7);">{{ field.help_text }}</small>
-                {% endif %}
-            </div>
-            {% endfor %}
-            
-            <div style="text-align: center;">
-                <button type="submit" class="submit-btn">
-                    <i class="fas fa-save"></i> 
-                    {% if edit_mode %}Обновить{% else %}Сохранить{% endif %}
-                </button>
-                
+            <h2>
+                <i class="fas {% if edit_mode %}fa-edit{% else %}fa-plus-circle{% endif %}"></i>
                 {% if edit_mode %}
-                <a href="{% url 'combined_view' %}" class="cancel-link">
-                    <i class="fas fa-times"></i> Отмена
-                </a>
+                    Редактирование: {{ editing_user.id }}
+                {% else %}
+                    Добавление пользователя
                 {% endif %}
-            </div>
-        </form>
-    </div>
+            </h2>
+            
+            <form method="post">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                    <ul class="errorlist">
+                        {% for error in field.errors %}
+                        <li><i class="fas fa-exclamation-circle"></i> {{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    {% if field.help_text %}
+                    <small style="color: rgba(255,255,255,0.7);">{{ field.help_text }}</small>
+                    {% endif %}
+                </div>
+                {% endfor %}
+                
+                <div style="text-align: center;">
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-save"></i> 
+                        {% if edit_mode %}Обновить{% else %}Сохранить{% endif %}
+                    </button>
+                    
+                    {% if edit_mode %}
+                    <a href="{% url 'combined_view' %}" class="cancel-link">
+                        <i class="fas fa-times"></i> Отмена
+                    </a>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </main>
 
     <!-- JavaScript -->
     <script>
@@ -495,11 +678,46 @@
             }
         });
 
-        // Поиск по таблице
+        // Автозаполнение callerid из id
+        document.addEventListener('DOMContentLoaded', function() {
+            const idField = document.getElementById('id_field');
+            const calleridField = document.getElementById('callerid_field');
+            
+            if (idField && calleridField) {
+                idField.addEventListener('input', function() {
+                    const currentCallerid = calleridField.value;
+                    const expectedValue = `<${this.value}>`;
+                    
+                    if (!currentCallerid || currentCallerid === expectedValue || currentCallerid === '') {
+                        if (this.value.length === 4) {
+                            calleridField.value = `<${this.value}>`;
+                        } else if (this.value.length === 0) {
+                            calleridField.value = '';
+                        }
+                    }
+                });
+            }
+        });
+
+        // Поиск по таблице + обновление счетчика
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('searchInput');
             const table = document.getElementById('dataTable');
             const rows = table.getElementsByTagName('tr');
+            const resultsCountSpan = document.getElementById('resultsCount');
+
+            function updateResultsCount() {
+                let visibleCount = 0;
+                for (let i = 1; i < rows.length; i++) {
+                    if (rows[i].style.display !== 'none') {
+                        visibleCount++;
+                    }
+                }
+                const totalRows = rows.length - 1;
+                if (resultsCountSpan) {
+                    resultsCountSpan.innerHTML = `<i class="fas fa-database"></i> Показано: ${visibleCount} из ${totalRows} записей`;
+                }
+            }
 
             searchInput.addEventListener('input', function() {
                 const filter = searchInput.value.toLowerCase();
@@ -518,7 +736,10 @@
 
                     rows[i].style.display = match ? '' : 'none';
                 }
+                updateResultsCount();
             });
+            
+            updateResultsCount();
         });
 
         // Закрыть форму по Escape

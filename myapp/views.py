@@ -63,3 +63,33 @@ def combined_view(request):
         'editing_user': editing_user,
     }
     return render(request, 'combined_view.html', context)
+
+def custom_logout(request):
+    request.session.flush()
+    return redirect('/')  # Перенаправляем на главную (gate.html)
+
+def delete_user(request, user_id):
+    """Удаление пользователя из всех таблиц"""
+    if request.method == 'POST':
+        try:
+            # Удаляем из ps_endpoints (каскадно удалит связанные? нет, у нас SET NULL)
+            endpoint = get_object_or_404(PsEndpoints, id=user_id)
+            
+            # Сохраняем ID для сообщения
+            deleted_id = endpoint.id
+            
+            # Удаляем записи из связанных таблиц
+            # Сначала удаляем aors (если есть)
+            PsAors.objects.filter(id=user_id).delete()
+            
+            # Удаляем auth (если есть)
+            PsAuths.objects.filter(id=user_id).delete()
+            
+            # Удаляем endpoint
+            endpoint.delete()
+            
+            messages.success(request, f'Пользователь {deleted_id} успешно удален!')
+        except Exception as e:
+            messages.error(request, f'Ошибка при удалении: {e}')
+    
+    return redirect('combined_view')
