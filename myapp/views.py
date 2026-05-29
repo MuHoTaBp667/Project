@@ -94,7 +94,7 @@ def combined_view(request):
                     
                     config_content = f"""#version:1.0.0.1
 
-## Настройка первой учетной записи SIP ##
+
 account.1.enable = 1
 account.1.label = {id_value}
 account.1.display_name = {form.cleaned_data.get('callerid', id_value)}
