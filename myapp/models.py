@@ -195,3 +195,5 @@ class PsEndpoints(models.Model):
     class Meta:
         managed = False
         db_table = 'ps_endpoints'
+
+

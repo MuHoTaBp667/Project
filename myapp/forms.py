@@ -77,3 +77,4 @@ class AddUserForm(forms.ModelForm):
             raise ValidationError('Пользователь с таким ID уже существует')
         
         return id_value
+

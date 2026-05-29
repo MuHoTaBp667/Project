@@ -104,8 +104,21 @@
             font-size: 18px;
         }
 
-        .user-info span {
-            font-weight: 500;
+        .role-badge {
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .role-admin {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .role-reader {
+            background: #3498db;
+            color: white;
         }
 
         .logout-btn {
@@ -139,6 +152,24 @@
             color: #333;
             margin-bottom: 20px;
             font-size: 20px;
+        }
+
+        /* Уведомление для читателя */
+        .reader-notice {
+            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+            border-left: 4px solid #17a2b8;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            color: #0c5460;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .reader-notice i {
+            font-size: 24px;
         }
 
         /* Кнопка добавления */
@@ -193,6 +224,17 @@
             to {
                 opacity: 1;
                 transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
             }
         }
         
@@ -393,24 +435,13 @@
             animation: slideIn 0.3s ease-out;
         }
         
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
         .alert-success {
             background-color: #d4edda;
             color: #155724;
             border: 1px solid #c3e6cb;
         }
         
-        .alert-error {
+        .alert-error, .alert-warning {
             background-color: #f8d7da;
             color: #721c24;
             border: 1px solid #f5c6cb;
@@ -495,7 +526,8 @@
             <div class="header-buttons">
                 <div class="user-info">
                     <i class="fas fa-user-circle"></i>
-                    <span>{{ user.username|default:"Admin" }}</span>
+                    <span class="role-badge {% if is_admin %}role-admin{% else %}role-reader{% endif %}">
+                    </span>
                 </div>
                 <form method="post" action="{% url 'logout' %}" style="margin: 0;">
                     {% csrf_token %}
@@ -512,7 +544,7 @@
     <div class="messages">
         {% for message in messages %}
         <div class="alert alert-{{ message.tags }}">
-            <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% endif %}"></i>
+            <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %}"></i>
             {{ message }}
         </div>
         {% endfor %}
@@ -522,6 +554,17 @@
     <!-- Основной контент -->
     <main class="main-content">
         <h2><i class="fas fa-users"></i> Список абонентов</h2>
+        
+        <!-- Уведомление для читателя -->
+        {% if not is_admin %}
+        <div class="reader-notice">
+            <i class="fas fa-eye"></i>
+            <div>
+                <strong>📖 Режим только для чтения</strong><br>
+                Вы вошли как читатель. Вы можете просматривать данные, но не можете добавлять, редактировать или удалять пользователей.
+            </div>
+        </div>
+        {% endif %}
         
         <!-- Счетчик результатов -->
         <div class="results-count" id="resultsCount">
@@ -564,6 +607,7 @@
                                             <td>{{ endpoint_item.allow|default:"alaw,ulaw" }}</td>
                                             <td>{{ endpoint_item.direct_media|default:"yes" }}</td>
                                             <td class="actions-cell">
+                                                {% if is_admin %}
                                                 <a href="?edit_id={{ endpoint_item.id }}" class="edit-link">
                                                     <i class="fas fa-edit"></i> Изменить
                                                 </a>
@@ -575,6 +619,11 @@
                                                         <i class="fas fa-trash-alt"></i> Удалить
                                                     </button>
                                                 </form>
+                                                {% else %}
+                                                <span style="color: #999; font-size: 12px;">
+                                                    <i class="fas fa-lock"></i> Только просмотр
+                                                </span>
+                                                {% endif %}
                                             </td>
                                         </tr>
                                     {% endif %}
@@ -587,19 +636,22 @@
                         <td colspan="11" class="no-data">
                             <i class="fas fa-info-circle"></i> Нет данных для отображения
                         </td>
-                    </tr>
+                    <tr>
                 {% endfor %}
             </tbody>
         </table>
 
-        <!-- Кнопка добавления -->
+        <!-- Кнопка добавления - ТОЛЬКО ДЛЯ АДМИНА -->
+        {% if is_admin %}
         <div class="btn-container">
             <button class="add-btn" onclick="toggleForm()">
                 <i class="fas fa-plus-circle"></i> Добавить пользователя
             </button>
         </div>
+        {% endif %}
 
-        <!-- Контейнер с формой -->
+        <!-- Контейнер с формой - ТОЛЬКО ДЛЯ АДМИНА -->
+        {% if is_admin %}
         <div id="formContainer" class="form-container {% if edit_mode %}show edit-mode{% endif %}">
             <button class="close-btn" onclick="toggleForm()">
                 <i class="fas fa-times"></i> Закрыть
@@ -648,6 +700,7 @@
                 </div>
             </form>
         </div>
+        {% endif %}
     </main>
 
     <!-- JavaScript -->
@@ -655,16 +708,18 @@
         // Переключатель формы
         function toggleForm() {
             const formContainer = document.getElementById('formContainer');
-            formContainer.classList.toggle('show');
-            
-            if (!formContainer.classList.contains('show') && window.location.search.includes('edit_id')) {
-                window.location.href = "{% url 'combined_view' %}";
-            }
-            
-            if (formContainer.classList.contains('show')) {
-                setTimeout(() => {
-                    formContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 100);
+            if (formContainer) {
+                formContainer.classList.toggle('show');
+                
+                if (!formContainer.classList.contains('show') && window.location.search.includes('edit_id')) {
+                    window.location.href = "{% url 'combined_view' %}";
+                }
+                
+                if (formContainer.classList.contains('show')) {
+                    setTimeout(() => {
+                        formContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
+                }
             }
         }
 
@@ -672,9 +727,13 @@
         window.addEventListener('load', function() {
             const hasErrors = document.querySelectorAll('.errorlist').length > 0;
             const isEditMode = {{ edit_mode|yesno:"true,false" }};
+            const isAdmin = {{ is_admin|yesno:"true,false" }};
             
-            if (hasErrors || isEditMode) {
-                document.getElementById('formContainer').classList.add('show');
+            if ((hasErrors || isEditMode) && isAdmin) {
+                const formContainer = document.getElementById('formContainer');
+                if (formContainer) {
+                    formContainer.classList.add('show');
+                }
             }
         });
 
@@ -703,50 +762,52 @@
         document.addEventListener('DOMContentLoaded', function() {
             const searchInput = document.getElementById('searchInput');
             const table = document.getElementById('dataTable');
-            const rows = table.getElementsByTagName('tr');
-            const resultsCountSpan = document.getElementById('resultsCount');
+            if (searchInput && table) {
+                const rows = table.getElementsByTagName('tr');
+                const resultsCountSpan = document.getElementById('resultsCount');
 
-            function updateResultsCount() {
-                let visibleCount = 0;
-                for (let i = 1; i < rows.length; i++) {
-                    if (rows[i].style.display !== 'none') {
-                        visibleCount++;
-                    }
-                }
-                const totalRows = rows.length - 1;
-                if (resultsCountSpan) {
-                    resultsCountSpan.innerHTML = `<i class="fas fa-database"></i> Показано: ${visibleCount} из ${totalRows} записей`;
-                }
-            }
-
-            searchInput.addEventListener('input', function() {
-                const filter = searchInput.value.toLowerCase();
-
-                for (let i = 1; i < rows.length; i++) {
-                    const cells = rows[i].getElementsByTagName('td');
-                    let match = false;
-
-                    for (let j = 0; j < cells.length - 1; j++) {
-                        const cellText = cells[j]?.textContent || cells[j]?.innerText;
-                        if (cellText && cellText.toLowerCase().includes(filter)) {
-                            match = true;
-                            break;
+                function updateResultsCount() {
+                    let visibleCount = 0;
+                    for (let i = 1; i < rows.length; i++) {
+                        if (rows[i].style.display !== 'none') {
+                            visibleCount++;
                         }
                     }
-
-                    rows[i].style.display = match ? '' : 'none';
+                    const totalRows = rows.length - 1;
+                    if (resultsCountSpan) {
+                        resultsCountSpan.innerHTML = `<i class="fas fa-database"></i> Показано: ${visibleCount} из ${totalRows} записей`;
+                    }
                 }
+
+                searchInput.addEventListener('input', function() {
+                    const filter = searchInput.value.toLowerCase();
+
+                    for (let i = 1; i < rows.length; i++) {
+                        const cells = rows[i].getElementsByTagName('td');
+                        let match = false;
+
+                        for (let j = 0; j < cells.length - 1; j++) {
+                            const cellText = cells[j]?.textContent || cells[j]?.innerText;
+                            if (cellText && cellText.toLowerCase().includes(filter)) {
+                                match = true;
+                                break;
+                            }
+                        }
+
+                        rows[i].style.display = match ? '' : 'none';
+                    }
+                    updateResultsCount();
+                });
+                
                 updateResultsCount();
-            });
-            
-            updateResultsCount();
+            }
         });
 
         // Закрыть форму по Escape
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 const formContainer = document.getElementById('formContainer');
-                if (formContainer.classList.contains('show')) {
+                if (formContainer && formContainer.classList.contains('show')) {
                     formContainer.classList.remove('show');
                     if (window.location.search.includes('edit_id')) {
                         window.location.href = "{% url 'combined_view' %}";

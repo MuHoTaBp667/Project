@@ -9,11 +9,7 @@ class CustomUserAdmin(UserAdmin):
     list_filter = ('is_staff', 'is_active', 'is_superuser', 'groups')
     search_fields = ('username', 'email')
     
-    fieldsets = UserAdmin.fieldsets + (
-        ('Права доступа', {
-            'fields': ('groups', 'user_permissions'),
-        }),
-    )
+    # Убрали дублирующую секцию fieldsets, так как groups и user_permissions уже есть в стандартном UserAdmin
 
 # Переопределяем админку групп
 class CustomGroupAdmin(GroupAdmin):

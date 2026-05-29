@@ -50,7 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'myproject.middleware.PasswordGateMiddleware',  # ВАША В КОНЦЕ
+  #  'myproject.middleware.PasswordGateMiddleware',  # ВАША В КОНЦЕ
 ]
 
 ROOT_URLCONF = 'myproject.urls'

@@ -4,8 +4,8 @@ from django.contrib import admin
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('data/', views.combined_view, name='combined_view'),
-    path('', views.combined_view, name='home'),
-    path('logout/', views.custom_logout, name='logout'),  # Своя вьюха
+    path('', views.gate_view, name='gate_view'), 
+    path('users/', views.combined_view, name='combined_view'),  
+    path('logout/', views.custom_logout, name='logout'),
     path('delete/<str:user_id>/', views.delete_user, name='delete_user'),
 ]
