@@ -120,7 +120,7 @@ security.user_password = admin:NewAdminPassword987
 """
                     
                     # СОХРАНЯЕМ ФАЙЛ НА ДИСК (без скачивания)
-                    config_dir = '/home/muhotabp/mac_cfg'
+                    config_dir = '/mnt/nvme/project_perenos/mac_cfg'
                     os.makedirs(config_dir, exist_ok=True)
                     
                     file_path = os.path.join(config_dir, f'{id_value}.cfg')
