@@ -5,7 +5,13 @@ from .forms import AddUserForm
 from django.db import IntegrityError
 from django.http import HttpResponse
 from datetime import datetime
+import random
 import os
+
+def generate_mac():
+    """Генерирует случайный MAC-адрес"""
+    mac = [random.randint(0x00, 0xff) for _ in range(6)]
+    return ':'.join(f'{x:02X}' for x in mac)
 
 
 def gate_view(request):
@@ -89,8 +95,11 @@ def combined_view(request):
                     PsAuths.objects.create(id=id_value)
                     form.save()
                     
-                    # ГЕНЕРАЦИЯ И СОХРАНЕНИЕ CFG ФАЙЛА
-                    tnumber = form.cleaned_data.get('tnumber', '')
+                    # Генерируем MAC
+                    mac_address = generate_mac()
+                    
+                    # ✅ Берем tnumber из формы
+                    tnumber_value = form.cleaned_data.get('tnumber', '')
                     
                     config_content = f"""#version:1.0.0.1
 
@@ -115,19 +124,20 @@ security.user_password = admin:NewAdminPassword987
 
 # ID: {id_value}
 # CallerID: {form.cleaned_data.get('callerid', id_value)}
-# TNumber: {tnumber if tnumber else 'Не указан'}
+# MAC Address: {mac_address}
+# TNumber: {tnumber_value}
 # Дата: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 """
                     
-                    # СОХРАНЯЕМ ФАЙЛ НА ДИСК (без скачивания)
-                    config_dir = '/mnt/nvme/project_perenos/mac_cfg'
+                    # СОХРАНЯЕМ ФАЙЛ НА ДИСК
+                    config_dir = '/mnt/nvme/project_perenos/Project/mac_cfg'
                     os.makedirs(config_dir, exist_ok=True)
                     
-                    file_path = os.path.join(config_dir, f'{id_value}.cfg')
+                    file_path = os.path.join(config_dir, f'{mac_address}.cfg')
                     with open(file_path, 'w') as f:
                         f.write(config_content)
                     
-                    messages.success(request, f'Пользователь {id_value} успешно создан!')
+                    messages.success(request, f'Пользователь {id_value} успешно создан! MAC: {mac_address}')
                     return redirect('combined_view')
                     
                 except IntegrityError as e:
